@@ -1,0 +1,28 @@
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local environment and secret files
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs and temporary output
+*.log
+logs/
+tmp/
+temp/
+
+# Docker runtime data
+database/
+data/
+volumes/
+
+# Build and cache output
+.cache/
+dist/
+build/
