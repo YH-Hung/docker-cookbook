@@ -79,13 +79,24 @@ docker build --platform linux/amd64 --provenance=false -t docker-cookbook/db2-li
 
 To test timezone behavior:
 
+Wait until the logs report setup completion before running the timestamp query.
+
 ```bash
-TZ=Asia/Taipei docker compose -f compose/db2-libfaketime/compose.yaml up -d --build
-docker exec db2-libfaketime date
+TZ=Asia/Taipei docker compose -f compose/db2-libfaketime/compose.yaml up -d --build --force-recreate
+docker logs -f db2-libfaketime
+
+docker exec --user db2inst1 db2-libfaketime bash -lc \
+  '. /database/config/db2inst1/sqllib/db2profile && printf "connect to ${DBNAME:-testdb};\nvalues current timestamp;\n" | db2 +p -tx'
 ```
 
 To test faketime behavior:
 
+Wait until the logs report setup completion before running the timestamp query. A one-off Compose `date` command does not prove Db2's SQL timestamp behavior because it does not query the database engine.
+
 ```bash
-FAKETIME="@2024-01-02 03:04:05" docker compose -f compose/db2-libfaketime/compose.yaml run --rm db2 date
+FAKETIME="@2024-01-02 03:04:05" docker compose -f compose/db2-libfaketime/compose.yaml up -d --build --force-recreate
+docker logs -f db2-libfaketime
+
+docker exec --user db2inst1 db2-libfaketime bash -lc \
+  '. /database/config/db2inst1/sqllib/db2profile && printf "connect to ${DBNAME:-testdb};\nvalues current timestamp;\n" | db2 +p -tx'
 ```
