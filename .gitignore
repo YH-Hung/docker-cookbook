@@ -26,3 +26,6 @@ volumes/
 .cache/
 dist/
 build/
+
+# Agents
+.air/
