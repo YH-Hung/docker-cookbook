@@ -5,8 +5,8 @@ Guidance for coding agents working in this repository.
 ## Project Overview
 
 This repository is a Docker cookbook for local development and repeatable test environments.
-It currently contains one recipe: IBM Db2 Community Edition with timezone setup and optional
-libfaketime support.
+It contains recipes for IBM Db2 Community Edition, Ubuntu, and Debian with timezone setup
+and optional libfaketime support.
 
 The repository is not an application monorepo. Keep changes focused on Dockerfiles,
 Compose files, shell wrappers, and recipe documentation.
@@ -16,12 +16,17 @@ Compose files, shell wrappers, and recipe documentation.
 - `README.md`: top-level project overview and recipe index.
 - `compose/`: runnable Docker Compose examples.
 - `compose/db2-libfaketime/`: Compose recipe for the Db2/libfaketime container.
+- `compose/ubuntu-libfaketime/`: Compose recipe for the Ubuntu/libfaketime container.
+- `compose/debian-libfaketime/`: Compose recipe for the Debian/libfaketime container.
 - `docs/`: longer recipe notes and operational caveats.
 - `docs/ibm-db2-libfaketime.md`: detailed notes for the Db2/libfaketime recipe.
+- `docs/linux-libfaketime.md`: notes for the Ubuntu and Debian/libfaketime recipes.
 - `images/`: custom image recipes.
 - `images/db2-libfaketime/`: Dockerfile, image README, and entrypoint wrapper.
+- `images/ubuntu-libfaketime/`: Dockerfile, image README, and entrypoint wrapper.
+- `images/debian-libfaketime/`: Dockerfile, image README, and entrypoint wrapper.
 
-## Current Recipe
+## Current Recipes
 
 The Db2/libfaketime recipe builds from `icr.io/db2_community/db2:11.5.9.0` by default and
 adds:
@@ -33,6 +38,17 @@ adds:
 
 Default platform handling is intentionally `linux/amd64` because the Db2 Community image is
 not available for every local host architecture.
+
+The Ubuntu and Debian/libfaketime recipes build from `ubuntu:24.04` and `debian:12-slim`
+by default and add:
+
+- `tzdata` for container timezone configuration.
+- distro-packaged `libfaketime`.
+- `scripts/entrypoint-time.sh`, which sets timezone files, conditionally enables
+  `LD_PRELOAD`, then runs the requested command.
+
+Their Dockerfiles discover the architecture-specific libfaketime shared library at build
+time and expose it through `LIBFAKETIME_PATH=/usr/local/lib/libfaketime.so.1`.
 
 ## Common Commands
 
@@ -58,12 +74,18 @@ Check Compose config after editing the Compose file:
 
 ```bash
 docker compose --env-file compose/db2-libfaketime/.env.example -f compose/db2-libfaketime/compose.yaml config
+docker compose --env-file compose/ubuntu-libfaketime/.env.example -f compose/ubuntu-libfaketime/compose.yaml config
+docker compose --env-file compose/debian-libfaketime/.env.example -f compose/debian-libfaketime/compose.yaml config
 ```
 
 Check shell syntax after editing shell scripts:
 
 ```bash
 bash -n images/db2-libfaketime/scripts/entrypoint-time.sh
+bash -n images/ubuntu-libfaketime/scripts/entrypoint-time.sh
+bash -n images/ubuntu-libfaketime/scripts/smoke-libfaketime.sh
+bash -n images/debian-libfaketime/scripts/entrypoint-time.sh
+bash -n images/debian-libfaketime/scripts/smoke-libfaketime.sh
 ```
 
 ## Development Guidance
