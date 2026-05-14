@@ -29,8 +29,8 @@ RUN set -eux; \
     ldconfig; \
     rm -rf /tmp/libfaketime
 
-COPY scripts/entrypoint-time.sh /usr/local/bin/entrypoint-time.sh
-RUN chmod 0755 /usr/local/bin/entrypoint-time.sh
+COPY scripts/entrypoint-time.sh scripts/smoke-libfaketime.sh /usr/local/bin/
+RUN chmod 0755 /usr/local/bin/entrypoint-time.sh /usr/local/bin/smoke-libfaketime.sh
 
 ENV TZ=UTC \
     DB2_ORIGINAL_ENTRYPOINT=/var/db2_setup/lib/setup_db2_instance.sh \

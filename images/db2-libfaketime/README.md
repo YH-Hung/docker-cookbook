@@ -63,4 +63,12 @@ FAKETIME_DISABLE_SHM=1
 
 All libfaketime environment variables are passed through to the process. Use them carefully: faking time for a database can affect logs, certificate checks, scheduling, and retention logic.
 
-On Apple Silicon hosts, this recipe runs Db2 through Docker Desktop's `linux/amd64` emulation. The image builds and Db2 starts there, but libfaketime can still hang under emulation; verify faketime behavior on the same target architecture where you will use it.
+Before starting Db2 with faketime enabled, verify that libfaketime works in the target Docker runtime:
+
+```bash
+docker run --rm --platform linux/amd64 \
+  --entrypoint smoke-libfaketime.sh \
+  docker-cookbook/db2-libfaketime:11.5.9.0
+```
+
+On Apple Silicon hosts, this recipe runs Db2 through Docker Desktop's `linux/amd64` emulation. The image builds and Db2 starts there, but libfaketime can still hang under emulation; verify faketime behavior on the same target architecture where you will use it. If the smoke check times out or reports the real date, Db2 SQL timestamps are not expected to follow faketime in that environment.

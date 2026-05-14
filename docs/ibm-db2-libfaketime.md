@@ -41,6 +41,16 @@ libfaketime is built from the pinned upstream release tag `v0.9.12` during the i
 The default build uses `LIBFAKETIME_COMPILE_CFLAGS="-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER"` to avoid clock-related hangs seen when running the amd64 image through Docker Desktop emulation.
 Even with those flags, libfaketime can still hang under Apple Silicon `linux/amd64` emulation. Verify faketime behavior on the same target architecture where you will use it; native Linux amd64 is the safest target for faketime testing with this Db2 base image.
 
+Before starting Db2 with faketime enabled, run the image smoke check:
+
+```bash
+docker run --rm --platform linux/amd64 \
+  --entrypoint smoke-libfaketime.sh \
+  docker-cookbook/db2-libfaketime:11.5.9.0
+```
+
+The smoke check runs a small Python process with `LD_PRELOAD` and expects it to report `2024-01-02`. If it times out or reports the real date, Db2 faketime is not expected to work in that Docker/runtime environment.
+
 The wrapper enables `LD_PRELOAD` only when one of these is set:
 
 - `FAKETIME`
@@ -91,7 +101,7 @@ docker exec --user db2inst1 db2-libfaketime bash -lc \
 
 To test faketime behavior:
 
-Wait until the logs report setup completion before running the timestamp query. A one-off Compose `date` command does not prove Db2's SQL timestamp behavior because it does not query the database engine.
+Run `smoke-libfaketime.sh` first. If it passes, wait until the logs report setup completion before running the timestamp query. A one-off Compose `date` command does not prove Db2's SQL timestamp behavior because it does not query the database engine.
 
 ```bash
 FAKETIME="@2024-01-02 03:04:05" docker compose -f compose/db2-libfaketime/compose.yaml up -d --build --force-recreate
