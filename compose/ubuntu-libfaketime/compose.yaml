@@ -1,0 +1,21 @@
+services:
+  ubuntu:
+    build:
+      context: ../../images/ubuntu-libfaketime
+      args:
+        UBUNTU_BASE_IMAGE: ${UBUNTU_BASE_IMAGE:-ubuntu:24.04}
+    image: ${UBUNTU_IMAGE_NAME:-docker-cookbook/ubuntu-libfaketime:24.04}
+    container_name: ${UBUNTU_CONTAINER_NAME:-ubuntu-libfaketime}
+    environment:
+      TZ: ${TZ:-UTC}
+      FAKETIME: ${FAKETIME:-}
+      FAKETIME_NO_CACHE: ${FAKETIME_NO_CACHE:-1}
+      FAKETIME_DONT_FAKE_MONOTONIC: ${FAKETIME_DONT_FAKE_MONOTONIC:-}
+      FAKETIME_TIMESTAMP_FILE: ${FAKETIME_TIMESTAMP_FILE:-}
+      FAKETIME_FOLLOW_FILE: ${FAKETIME_FOLLOW_FILE:-}
+      FAKETIME_START_AFTER_SECONDS: ${FAKETIME_START_AFTER_SECONDS:-}
+      FAKETIME_STOP_AFTER_SECONDS: ${FAKETIME_STOP_AFTER_SECONDS:-}
+      FAKETIME_START_AFTER_NUMCALLS: ${FAKETIME_START_AFTER_NUMCALLS:-}
+      FAKETIME_STOP_AFTER_NUMCALLS: ${FAKETIME_STOP_AFTER_NUMCALLS:-}
+      FAKETIME_DISABLE_SHM: ${FAKETIME_DISABLE_SHM:-}
+    command: ["sleep", "infinity"]

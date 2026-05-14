@@ -1,0 +1,21 @@
+services:
+  debian:
+    build:
+      context: ../../images/debian-libfaketime
+      args:
+        DEBIAN_BASE_IMAGE: ${DEBIAN_BASE_IMAGE:-debian:12-slim}
+    image: ${DEBIAN_IMAGE_NAME:-docker-cookbook/debian-libfaketime:12}
+    container_name: ${DEBIAN_CONTAINER_NAME:-debian-libfaketime}
+    environment:
+      TZ: ${TZ:-UTC}
+      FAKETIME: ${FAKETIME:-}
+      FAKETIME_NO_CACHE: ${FAKETIME_NO_CACHE:-1}
+      FAKETIME_DONT_FAKE_MONOTONIC: ${FAKETIME_DONT_FAKE_MONOTONIC:-}
+      FAKETIME_TIMESTAMP_FILE: ${FAKETIME_TIMESTAMP_FILE:-}
+      FAKETIME_FOLLOW_FILE: ${FAKETIME_FOLLOW_FILE:-}
+      FAKETIME_START_AFTER_SECONDS: ${FAKETIME_START_AFTER_SECONDS:-}
+      FAKETIME_STOP_AFTER_SECONDS: ${FAKETIME_STOP_AFTER_SECONDS:-}
+      FAKETIME_START_AFTER_NUMCALLS: ${FAKETIME_START_AFTER_NUMCALLS:-}
+      FAKETIME_STOP_AFTER_NUMCALLS: ${FAKETIME_STOP_AFTER_NUMCALLS:-}
+      FAKETIME_DISABLE_SHM: ${FAKETIME_DISABLE_SHM:-}
+    command: ["sleep", "infinity"]
