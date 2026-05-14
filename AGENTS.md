@@ -27,7 +27,7 @@ The Db2/libfaketime recipe builds from `icr.io/db2_community/db2:11.5.9.0` by de
 adds:
 
 - `tzdata` for container timezone configuration.
-- `libfaketime` built from the pinned upstream `v0.9.12` tag.
+- distro-packaged `libfaketime` from EPEL.
 - `scripts/entrypoint-time.sh`, which sets timezone files, conditionally enables
   `LD_PRELOAD`, then delegates to IBM's original Db2 entrypoint.
 

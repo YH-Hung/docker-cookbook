@@ -37,9 +37,9 @@ If the timezone file is missing, the wrapper prints a warning and still exports 
 
 ## libfaketime
 
-libfaketime is built from the pinned upstream release tag `v0.9.12` during the image build.
-The default build uses `LIBFAKETIME_COMPILE_CFLAGS="-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER"` to avoid clock-related hangs seen when running the amd64 image through Docker Desktop emulation.
-Even with those flags, libfaketime can still hang under Apple Silicon `linux/amd64` emulation. Verify faketime behavior on the same target architecture where you will use it; native Linux amd64 is the safest target for faketime testing with this Db2 base image.
+libfaketime is installed from the Db2 base image's enabled EPEL repository during the image build.
+The distro package is used because the upstream source build can hang during `LD_PRELOAD` initialization in this Db2 base image under Docker Desktop `linux/amd64` emulation.
+Verify faketime behavior on the same target architecture where you will use it; native Linux amd64 remains the safest target for faketime testing with this Db2 base image.
 
 Before starting Db2 with faketime enabled, run the image smoke check:
 

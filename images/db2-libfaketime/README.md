@@ -3,7 +3,7 @@
 This image extends `icr.io/db2_community/db2:11.5.9.0` with:
 
 - `tzdata` for timezone configuration.
-- `libfaketime` built from the pinned upstream `v0.9.12` release tag.
+- The distro-packaged `libfaketime` from EPEL.
 - A small entrypoint wrapper that configures `TZ`, conditionally enables libfaketime, then runs IBM's original Db2 entrypoint.
 
 The image is intended for local development and test scenarios. It is not a production Db2 image.
@@ -18,7 +18,7 @@ docker build \
   images/db2-libfaketime
 ```
 
-Override the base image or libfaketime release when needed:
+Override the base image or target platform when needed:
 
 ```bash
 docker build \
@@ -26,14 +26,12 @@ docker build \
   --provenance=false \
   --build-arg DB2_BASE_IMAGE=icr.io/db2_community/db2:11.5.9.0 \
   --build-arg DB2_PLATFORM=linux/amd64 \
-  --build-arg LIBFAKETIME_VERSION=v0.9.12 \
-  --build-arg "LIBFAKETIME_COMPILE_CFLAGS=-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER" \
   -t docker-cookbook/db2-libfaketime:11.5.9.0 \
   images/db2-libfaketime
 ```
 
 The default platform is `linux/amd64` because IBM Db2 Community Edition images are not published for every local Docker host architecture.
-The default libfaketime compile flags are `-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER` to avoid clock-related hangs seen when running the amd64 Db2 image through Docker Desktop emulation.
+The image uses the EPEL `libfaketime` package because the upstream source build can hang during `LD_PRELOAD` initialization in this Db2 base image under Docker Desktop `linux/amd64` emulation.
 
 ## Runtime Configuration
 
@@ -71,4 +69,4 @@ docker run --rm --platform linux/amd64 \
   docker-cookbook/db2-libfaketime:11.5.9.0
 ```
 
-On Apple Silicon hosts, this recipe runs Db2 through Docker Desktop's `linux/amd64` emulation. The image builds and Db2 starts there, but libfaketime can still hang under emulation; verify faketime behavior on the same target architecture where you will use it. If the smoke check times out or reports the real date, Db2 SQL timestamps are not expected to follow faketime in that environment.
+On Apple Silicon hosts, this recipe runs Db2 through Docker Desktop's `linux/amd64` emulation. Verify faketime behavior on the same target architecture where you will use it. If the smoke check times out or reports the real date, Db2 SQL timestamps are not expected to follow faketime in that environment.

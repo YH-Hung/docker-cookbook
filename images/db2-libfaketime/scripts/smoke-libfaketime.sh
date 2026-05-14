@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-faketime_lib="${LIBFAKETIME_PATH:-/usr/local/lib/faketime/libfaketime.so.1}"
+faketime_lib="${LIBFAKETIME_PATH:-/usr/lib64/faketime/libfaketime.so.1}"
 timeout_seconds="${LIBFAKETIME_SMOKE_TIMEOUT_SECONDS:-10}"
 expected_prefix="${LIBFAKETIME_SMOKE_EXPECTED_PREFIX:-2024-01-02}"
 

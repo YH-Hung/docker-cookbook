@@ -22,7 +22,7 @@ has_faketime_config() {
 }
 
 configure_faketime() {
-  local faketime_lib="${LIBFAKETIME_PATH:-/usr/local/lib/faketime/libfaketime.so.1}"
+  local faketime_lib="${LIBFAKETIME_PATH:-/usr/lib64/faketime/libfaketime.so.1}"
   local profile_file="/etc/profile.d/faketime.sh"
 
   if ! has_faketime_config; then
